@@ -1,15 +1,21 @@
-const { MongoClient } = require("mongodb");
+require("dotenv").config();
 
-const uri =
-  "mongodb+srv://viniciusolivi:vcUEtMayrMhipi7n@vocluster.ipcls0v.mongodb.net/?retryWrites=true&w=majority&appName=VOCluster";
-const client = new MongoClient(uri);
-async function createConnection() {
-  try {
-    await client.connect();
-    console.log("Connected to the database");
-  } catch (error) {
-    log.error("Error connecting to the database: ", error);
-  }
-}
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
 
-createConnection();
+const app = express();
+app.use(cors());
+//parse incoming data
+app.use(express.json());
+
+mongoose
+  .connect(process.env.MONGODB_URL)
+  .then(() => {
+    app.listen(4000, () => {
+      console.log(`listening on port ${process.env.PORT}, connected to db`);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+  });
